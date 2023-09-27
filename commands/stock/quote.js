@@ -1,7 +1,9 @@
-// Import necessary dependencies
+'use strict';
+
 const axios = require('axios');
 const { SlashCommandBuilder } = require('discord.js');
-const { APIKey } = require('./config.json');
+const { APIKey } = require('../../config.json');
+
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -19,16 +21,16 @@ module.exports = {
       const ticker = interaction.options.getString('ticker');
       
       // Fetch the quote using Axios and the provided APIKey
-      const response = await axios.get(`URL_HERE?symbol=${ticker}&apikey=${APIKey}`);
+      const response = await axios.get(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${ticker}&apikey=${APIKey}`);
       
       if (response.status === 200) {
-        const quoteValue = response.data[0];
+        const quoteValue = response.data['Global Quote'];
         
         // Reply with the quote data
         await interaction.reply(
-          `Here's the quote for ${quoteValue.symbol}:\n` +
-          `${quoteValue.name}\n` +
-          `${quoteValue.price}`
+          `Here's the quote for ${ticker}:\n` +
+          `${quoteValue['01. symbol']}\n` +
+          `${quoteValue['05. price']}`
         );
       } else {
         await interaction.reply('Unable to fetch the quote. Please try again later.');
